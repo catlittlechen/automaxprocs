@@ -41,6 +41,9 @@ const (
 	// _cgroupCPUCFSPeriodUsParam is the file name for the CGroup CFS period
 	// parameter.
 	_cgroupCPUCFSPeriodUsParam = "cpu.cfs_period_us"
+
+	// parameter.
+	_cgroupMEMLimitInBytes = "memory.limit_in_bytes"
 )
 
 const (
@@ -114,4 +117,18 @@ func (cg CGroups) CPUQuota() (float64, bool, error) {
 	}
 
 	return float64(cfsQuotaUs) / float64(cfsPeriodUs), true, nil
+}
+
+func (cg CGroups) MemoryLimit() (float64, bool, error) {
+	memCGroup, exists := cg[_cgroupSubsysMemory]
+	if !exists {
+		return -1, false, nil
+	}
+
+	memLimit, err := memCGroup.readInt(_cgroupMEMLimitInBytes)
+	if defined := memLimit > 0; err != nil || !defined {
+		return -1, defined, err
+	}
+
+	return float64(memLimit), true, nil
 }

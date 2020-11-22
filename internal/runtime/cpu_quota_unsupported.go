@@ -28,3 +28,7 @@ package runtime
 func CPUQuotaToGOMAXPROCS(_ int) (int, CPUQuotaStatus, error) {
 	return -1, CPUQuotaUndefined, nil
 }
+
+func GetMemoryLimit() (int, CPUQuotaStatus, error) {
+	return -1, CPUQuotaUndefined, nil
+}

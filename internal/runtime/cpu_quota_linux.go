@@ -47,3 +47,18 @@ func CPUQuotaToGOMAXPROCS(minValue int) (int, CPUQuotaStatus, error) {
 	}
 	return maxProcs, CPUQuotaUsed, nil
 }
+
+func GetMemoryLimit() (int, CPUQuotaStatus, error) {
+	cgroups, err := cg.NewCGroupsForCurrentProcess()
+	if err != nil {
+		return -1, CPUQuotaUndefined, err
+	}
+
+	quota, defined, err := cgroups.MemoryLimit()
+	if !defined || err != nil {
+		return -1, CPUQuotaUndefined, err
+	}
+
+	maxProcs := int(math.Floor(quota))
+	return maxProcs, CPUQuotaUsed, nil
+}
